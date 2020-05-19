@@ -52,30 +52,65 @@ public class HWSeleniumPart2 {
         WebElement tupToBottomRegistration = driver.findElement(bottomRegistration);
 
         wait.until(ExpectedConditions.elementToBeClickable(tupToBottomRegistration)).click();    // click to registration bottom
-        WebElement tupToFirstRegistrationCell = driver.findElement(nameRegCell);
 
         //First test point
+        WebElement tupToFirstRegistrationCell = driver.findElement(nameRegCell);
         wait.until(ExpectedConditions.elementToBeClickable(nameRegCell)).click();   // tup to cell for a name input
-        WebElement tupToSecondRegistrationCell = driver.findElement(mailRegCell);
-        //String expectedNameStatus = driver.findElement(By.cssSelector("[class='ng-pristine ng-invalid ng-touched']"));
-        //assertTrue(actualNameStatus.contains(expectedNameStatus));
-        String expectedNameStatus = driver.getCssValue("border-color");
 
         //Second Test Point
+        WebElement tupToSecondRegistrationCell = driver.findElement(mailRegCell);
         wait.until(ExpectedConditions.elementToBeClickable(mailRegCell)).click();   // tup to cell for a mail input
-        WebElement tupToThirdRegistrationSell = driver.findElement(passwordRegCell);
-
-       // <input _size_medium="" formcontrolname="username" type="text" class="ng-untouched ng-pristine ng-invalid">
-        // class="ng-pristine ng-invalid ng-touched" - failed cell mail
 
         //Third Test Point
+        WebElement tupToThirdRegistrationSell = driver.findElement(passwordRegCell);
         wait.until(ExpectedConditions.elementToBeClickable(passwordRegCell)).click();   //tup to cell for a password input
         WebElement tupToReg = driver.findElement(tupToBottomReg);
+
         wait.until(ExpectedConditions.elementToBeClickable(tupToBottomReg)).click();    // tup to registration bottom
 
+        boolean expectedName = driver.getPageSource().contains(" Введите свое имя на кириллице ");
+        boolean expectedMail = driver.getPageSource().contains(" Введите свою эл. почту ");
+        boolean expectedPassword = driver.getPageSource().contains(" Пароль должен быть не менее 6 символов, содержать цифры и латинские буквы, в том числе заглавные, и не должен совпадать с именем и эл. почтой ");
+        assertTrue(expectedName&&expectedMail&&expectedPassword, "Name or(and) email or(and) password were entered");
     }
 
 
+    @Test
+    public void registrationWithoutOneParametr() {
+        WebElement tupToRegistrationBottom1 = driver.findElement(registration);
+
+        wait.until(ExpectedConditions.elementToBeClickable(tupToRegistrationBottom1)).click();   // click to check-in
+        WebElement tupToBottomRegistration1 = driver.findElement(bottomRegistration);
+
+        wait.until(ExpectedConditions.elementToBeClickable(tupToBottomRegistration1)).click();    // click to registration bottom
+
+        //First test point
+        WebElement tupToFirstRegistrationCell1 = driver.findElement(nameRegCell);
+        wait.until(ExpectedConditions.elementToBeClickable(nameRegCell)).click();   // tup to cell for a name input
+        tupToFirstRegistrationCell1.sendKeys("блаблабла");
+
+        //Second Test Point
+        WebElement tupToSecondRegistrationCell1 = driver.findElement(mailRegCell);
+        wait.until(ExpectedConditions.elementToBeClickable(mailRegCell)).click();   // tup to cell for a mail input
+
+        //Third Test Point
+        WebElement tupToThirdRegistrationSell1 = driver.findElement(passwordRegCell);
+        wait.until(ExpectedConditions.elementToBeClickable(passwordRegCell)).click();   //tup to cell for a password input
+        WebElement tupToReg1 = driver.findElement(tupToBottomReg);
+
+        wait.until(ExpectedConditions.elementToBeClickable(tupToBottomReg)).click();    // tup to registration bottom
+
+        String actua1lName = tupToFirstRegistrationCell1.getCssValue("class");
+        String expected1Name = "ng-dirty ng-valid ng-touched";
+        String actual1Mail = tupToSecondRegistrationCell1.getCssValue("class");
+        String expected1Mail = "ng-pristine ng-invalid ng-touched";
+        String actual1Password = tupToThirdRegistrationSell1.getCssValue("class");
+        String expected1Password = "ng-pristine ng-invalid ng-touched";
+        assertTrue(expected1Name.contains(actua1lName) &&
+                        expected1Mail.contains(actual1Mail)&&
+                        expected1Password.contains(actual1Password),
+                "You should to enter text just in one cell");
+    }
 
     @AfterMethod
     public void afterMethod(){
